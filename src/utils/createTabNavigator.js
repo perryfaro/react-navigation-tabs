@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import {
-  TabRouter,
   StackActions,
   SceneView,
   createNavigator,

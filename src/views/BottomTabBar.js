@@ -111,7 +111,22 @@ class TabBarBottom extends React.Component<Props, State> {
     layout: { height: 0, width: 0 },
     keyboard: false,
     visible: new Animated.Value(1),
+    hideTab: []
   };
+
+  componentDidUpdate() {
+    const {
+      refreshTabs,
+    } = this.props.navigation.state;
+    if (refreshTabs) {
+      this.setState({hideTab: HideTabStore.getStore()});
+      this.props.navigation.refreshTabsDone()
+    }
+  }
+
+  componentWillMount() {
+    this.setState({hideTab: HideTabStore.getStore()});
+  }
 
   componentDidMount() {
     if (Platform.OS === 'ios') {
@@ -120,16 +135,6 @@ class TabBarBottom extends React.Component<Props, State> {
     } else {
       Keyboard.addListener('keyboardDidShow', this._handleKeyboardShow);
       Keyboard.addListener('keyboardDidHide', this._handleKeyboardHide);
-    }
-
-    const {
-      refreshTabs,
-    } = this.props.navigation.state;
-    const {
-    } = prevProps.navigation.state;
-    if (refreshTabs) {
-      this.setState({hideTab: HideTabStore.getStore()});
-      this.props.navigation.refreshTabsDone()
     }
   }
 
