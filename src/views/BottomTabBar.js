@@ -13,6 +13,7 @@ import { SafeAreaView } from '@react-navigation/native';
 
 import CrossFadeIcon from './CrossFadeIcon';
 import withDimensions from '../utils/withDimensions';
+import HideTabStore from '../utils/HideTabStore';
 
 type Orientation = 'horizontal' | 'vertical';
 type Position = 'beside-icon' | 'below-icon';
@@ -119,6 +120,16 @@ class TabBarBottom extends React.Component<Props, State> {
     } else {
       Keyboard.addListener('keyboardDidShow', this._handleKeyboardShow);
       Keyboard.addListener('keyboardDidHide', this._handleKeyboardHide);
+    }
+
+    const {
+      refreshTabs,
+    } = this.props.navigation.state;
+    const {
+    } = prevProps.navigation.state;
+    if (refreshTabs) {
+      this.setState({hideTab: HideTabStore.getStore()});
+      this.props.navigation.refreshTabsDone()
     }
   }
 
@@ -350,52 +361,54 @@ class TabBarBottom extends React.Component<Props, State> {
       >
         <SafeAreaView style={tabBarStyle} forceInset={safeAreaInset}>
           {routes.map((route, index) => {
-            const focused = index === navigation.state.index;
-            const scene = { route, focused };
-            const accessibilityLabel = this.props.getAccessibilityLabel({
-              route,
-            });
+            if (!this.state.hideTab.includes(route.key)) {
+              const focused = index === navigation.state.index;
+              const scene = { route, focused };
+              const accessibilityLabel = this.props.getAccessibilityLabel({
+                route,
+              });
 
-            const accessibilityRole = this.props.getAccessibilityRole({
-              route,
-            });
+              const accessibilityRole = this.props.getAccessibilityRole({
+                route,
+              });
 
-            const accessibilityStates = this.props.getAccessibilityStates(
-              scene
-            );
+              const accessibilityStates = this.props.getAccessibilityStates(
+                scene
+              );
 
-            const testID = this.props.getTestID({ route });
+              const testID = this.props.getTestID({ route });
 
-            const backgroundColor = focused
-              ? activeBackgroundColor
-              : inactiveBackgroundColor;
+              const backgroundColor = focused
+                ? activeBackgroundColor
+                : inactiveBackgroundColor;
 
-            const ButtonComponent =
-              this.props.getButtonComponent({ route }) ||
-              TouchableWithoutFeedbackWrapper;
+              const ButtonComponent =
+                this.props.getButtonComponent({ route }) ||
+                TouchableWithoutFeedbackWrapper;
 
-            return (
-              <ButtonComponent
-                key={route.key}
-                onPress={() => onTabPress({ route })}
-                onLongPress={() => onTabLongPress({ route })}
-                testID={testID}
-                accessibilityLabel={accessibilityLabel}
-                accessibilityRole={accessibilityRole}
-                accessibilityStates={accessibilityStates}
-                style={[
-                  styles.tab,
-                  { backgroundColor },
-                  this._shouldUseHorizontalLabels()
-                    ? styles.tabLandscape
-                    : styles.tabPortrait,
-                  tabStyle,
-                ]}
-              >
-                {this._renderIcon(scene)}
-                {this._renderLabel(scene)}
-              </ButtonComponent>
-            );
+              return (
+                <ButtonComponent
+                  key={route.key}
+                  onPress={() => onTabPress({ route })}
+                  onLongPress={() => onTabLongPress({ route })}
+                  testID={testID}
+                  accessibilityLabel={accessibilityLabel}
+                  accessibilityRole={accessibilityRole}
+                  accessibilityStates={accessibilityStates}
+                  style={[
+                    styles.tab,
+                    { backgroundColor },
+                    this._shouldUseHorizontalLabels()
+                      ? styles.tabLandscape
+                      : styles.tabPortrait,
+                    tabStyle,
+                  ]}
+                >
+                  {this._renderIcon(scene)}
+                  {this._renderLabel(scene)}
+                </ButtonComponent>
+              );
+            }
           })}
         </SafeAreaView>
       </Animated.View>
