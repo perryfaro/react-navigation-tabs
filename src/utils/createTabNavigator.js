@@ -2,12 +2,13 @@
 
 import * as React from 'react';
 import {
-  TabRouter,
   StackActions,
   SceneView,
   createNavigator,
   NavigationActions,
 } from '@react-navigation/core';
+
+import TabWithHideRouter from '../routers/TabWithHideRouter';
 
 export type InjectedProps = {|
   getLabelText: (props: { route: any }) => any,
@@ -195,7 +196,7 @@ export default function createTabNavigator(TabView: React.ComponentType<*>) {
   }
 
   return (routes: *, config: * = {}) => {
-    const router = TabRouter(routes, config);
+    const router = TabWithHideRouter(routes, config);
     return createNavigator(NavigationView, router, config);
   };
 }
