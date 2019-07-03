@@ -32,7 +32,7 @@ module.exports = {
   /**
    * Utils
    */
-  get hideTabStore() {
+  get HideTabStore() {
     return require('./utils/hideTabStore').default;
   },
 };
