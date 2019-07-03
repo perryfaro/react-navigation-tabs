@@ -28,4 +28,11 @@ module.exports = {
   get createTabNavigator() {
     return require('./utils/createTabNavigator').default;
   },
+  
+  /**
+   * Utils
+   */
+  get hideTabStore() {
+    return require('./utils/hideTabStore').default;
+  },
 };
